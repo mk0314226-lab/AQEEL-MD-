@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQEEL KING MD - WhatsApp Pairing Portal</title>
+  <!-- Tailwind CSS for modern, premium UI design -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
+      50% { box-shadow: 0 0 35px rgba(34, 197, 94, 0.4); }
+    }
+    .glow-card {
+      animation: pulseGlow 4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+  <!-- CONFIG BLOCK AT THE VERY TOP -->
+  <script>
+    const CONFIG = {
+      brandName: "AQEEL KING MD",
+      bannerImageUrl: "https://i.postimg.cc/HL8yTVRM/bd6bd375d08772dd294d992906cefee5.jpg",
+      ownerNumber: "923127493393",
+      ownerName: "AQEEL KING",
+      channelLink: "https://whatsapp.com/channel/0029VbCpRhM8KMqcDQjjBo2y",
+      backendUrl: "https://web-production-4abfe.up.railway.app"
+    };
+  </script>
+
+  <!-- Background Ambient Glows -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-green-600/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 -right-40 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full px-4 pointer-events-none"></div>
+
+  <!-- Header / Navigation -->
+  <header class="relative z-10 w-full border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md">
+    <div class="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img id="header-banner" src="" alt="Brand Logo" class="w-10 h-10 rounded-xl object-cover ring-2 ring-brand-500/50 shadow-md">
+        <div>
+          <h1 id="header-brand-name" class="font-bold text-base sm:text-lg tracking-tight text-white leading-tight"></h1>
+          <p class="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
+            <span>Owner: <span id="header-owner-name" class="text-slate-200 font-medium"></span></span>
+          </p>
+        </div>
+      </div>
+      
+      <!-- System Status Indicator -->
+      <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-full shadow-inner">
+        <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+        <span id="status-text" class="text-xs font-medium text-slate-300">Checking...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="relative z-10 flex-grow max-w-4xl w-full mx-auto px-4 py-8 flex flex-col items-center justify-center gap-8">
+    
+    <!-- Hero / Intro Banner -->
+    <div class="text-center space-y-3 max-w-xl">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold uppercase tracking-wider">
+        <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Multi-Device Bot
+      </div>
+      <h2 id="hero-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white"></h2>
+      <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+        Connect your WhatsApp account securely in seconds. Generate your pairing code instantly and bring your automated bot session online.
+      </p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-2xl">
+      <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-sm">
+        <p class="text-xs text-slate-400 font-medium">Total Users</p>
+        <p id="stat-total-users" class="text-xl sm:text-2xl font-bold text-white mt-1">-</p>
+      </div>
+      <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-sm">
+        <p class="text-xs text-slate-400 font-medium">Active Sessions</p>
+        <p id="stat-active-sessions" class="text-xl sm:text-2xl font-bold text-brand-400 mt-1">-</p>
+      </div>
+      <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-sm">
+        <p class="text-xs text-slate-400 font-medium">Total Paired</p>
+        <p id="stat-total-paired" class="text-xl sm:text-2xl font-bold text-white mt-1">-</p>
+      </div>
+      <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-sm">
+        <p class="text-xs text-slate-400 font-medium">New Today</p>
+        <p id="stat-daily-new" class="text-xl sm:text-2xl font-bold text-emerald-400 mt-1">-</p>
+      </div>
+    </div>
+
+    <!-- Pairing Card / Panel -->
+    <div class="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl glow-card backdrop-blur-xl">
+      
+      <!-- Input Form State -->
+      <div id="pairing-form-container">
+        <h3 class="text-lg font-bold text-white mb-1">Link Your Device</h3>
+        <p class="text-xs text-slate-400 mb-6">Enter your phone number including country code to generate your secure pairing code.</p>
+        
+        <form id="pairing-form" onsubmit="handlePairing(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">WhatsApp Number</label>
+            <div class="flex gap-2">
+              <!-- Country Code Selector / Input -->
+              <div class="relative w-28">
+                <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm font-medium">+</span>
+                <input 
+                  type="text" 
+                  id="country-code" 
+                  value="92" 
+                  required 
+                  maxlength="4"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-7 pr-3 py-3 text-white text-sm font-medium focus:outline-none focus:border-brand-500 transition-colors text-center"
+                  placeholder="92"
+                >
+              </div>
+              <!-- Phone Number Input -->
+              <div class="relative flex-1">
+                <input 
+                  type="tel" 
+                  id="phone-number" 
+                  required 
+                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm font-medium focus:outline-none focus:border-brand-500 transition-colors"
+                  placeholder="3127493393"
+                >
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1.5">Example: Country code <span class="text-slate-400 font-semibold">92</span> and number <span class="text-slate-400 font-semibold">3127493393</span> (No +, spaces, or dashes).</p>
+          </div>
+
+          <button 
+            type="submit" 
+            id="submit-btn"
+            class="w-full mt-2 bg-brand-600 hover:bg-brand-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 text-sm cursor-pointer active:scale-[0.99]"
+          >
+            <i class="fa-solid fa-qrcode"></i> Get Pairing Code
+          </button>
+        </form>
+      </div>
+
+      <!-- Result Code State (Hidden by Default) -->
+      <div id="pairing-result-container" class="hidden flex flex-col items-center text-center space-y-6">
+        <div class="w-16 h-16 rounded-full bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 text-2xl">
+          <i class="fa-solid fa-check"></i>
+        </div>
+
+        <div class="space-y-1">
+          <h3 class="text-lg font-bold text-white">Pairing Code Generated</h3>
+          <p class="text-xs text-slate-400">Open WhatsApp on your phone > Linked Devices > Link a Device > Link with phone number instead.</p>
+        </div>
+
+        <!-- Code Display Box -->
+        <div class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center gap-2">
+          <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Your Code</span>
+          <div id="pairing-code-display" class="text-2xl sm:text-3xl font-black text-brand-400 tracking-wider font-mono">
+            --------
+          </div>
+          <button 
+            type="button" 
+            onclick="copyPairingCode()"
+            class="mt-1 text-xs text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium"
+          >
+            <i class="fa-regular fa-copy"></i> Copy Code
+          </button>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="flex items-center gap-2 text-xs text-slate-400 bg-slate-950/50 px-4 py-2 rounded-full border border-slate-800/50">
+          <i class="fa-regular fa-clock text-amber-400"></i>
+          <span>Expires in: <strong id="countdown-timer" class="text-amber-400 font-mono">02:00</strong></span>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="resetPairingView()"
+          class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 px-4 rounded-xl transition-all text-xs"
+        >
+          Pair Another Number
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Official Channel Banner / Link Card -->
+    <div class="w-full max-w-md bg-gradient-to-r from-slate-900 to-slate-900/80 border border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 text-lg flex-shrink-0">
+          <i class="fa-brands fa-whatsapp"></i>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-white">Join Official Channel</h4>
+          <p class="text-xs text-slate-400">Get updates, scripts & bot supports.</p>
+        </div>
+      </div>
+      <a 
+        id="channel-link-btn" 
+        href="#" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center gap-1.5 flex-shrink-0"
+      >
+        <span>Join</span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 w-full border-t border-slate-800/80 bg-slate-900/40 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>&copy; <span id="footer-year"></span> <span id="footer-brand-name"></span>. All rights reserved.</p>
+      <p class="text-slate-400">Powered by Baileys MD Protocol</p>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // Initialize UI branding from CONFIG block
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("header-banner").src = CONFIG.bannerImageUrl;
+      document.getElementById("header-brand-name").textContent = CONFIG.brandName;
+      document.getElementById("header-owner-name").textContent = CONFIG.ownerName;
+      document.getElementById("hero-title").textContent = CONFIG.brandName;
+      document.getElementById("channel-link-btn").href = CONFIG.channelLink;
+      document.getElementById("footer-brand-name").textContent = CONFIG.brandName;
+      document.getElementById("footer-year").textContent = new Date().getFullYear();
+
+      // Initial Health & Stats fetch
+      checkServerHealth();
+      fetchStats();
+
+      // Poll stats every 30 seconds
+      setInterval(fetchStats, 30000);
+    });
+
+    // Toast Notification System
+    function showToast(message, type = "error") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      
+      const bgColor = type === "error" ? "bg-rose-950/90 border-rose-800 text-rose-200" : "bg-emerald-950/90 border-emerald-800 text-emerald-200";
+      const icon = type === "error" ? "fa-circle-exclamation text-rose-400" : "fa-circle-check text-emerald-400";
+
+      toast.className = `pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border ${bgColor} shadow-xl backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icon} text-base flex-shrink-0"></i>
+        <p class="text-xs font-medium flex-1">${message}</p>
+        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      `;
+
+      container.appendChild(toast);
+      
+      // Trigger smooth fade-in
+      setTimeout(() => {
+        toast.classList.remove("translate-y-2", "opacity-0");
+      }, 10);
+
+      // Auto dismiss after 5 seconds
+      setTimeout(() => {
+        toast.classList.add("translate-y-2", "opacity-0");
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+
+    // Health Check
+    async function checkServerHealth() {
+      const dot = document.getElementById("status-dot");
+      const text = document.getElementById("status-text");
+      try {
+        const response = await fetch(`${CONFIG.backendUrl}/api/health`);
+        const data = await response.json();
+        if (response.ok && data.status === "ok") {
+          dot.className = "w-2.5 h-2.5 rounded-full bg-brand-500 shadow-sm shadow-brand-500/50";
+          text.textContent = "Online";
+        } else {
+          throw new Error("Invalid health status");
+        }
+      } catch (err) {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50";
+        text.textContent = "Offline";
+      }
+    }
+
+    // Fetch Stats
+    async function fetchStats() {
+      try {
+        const response = await fetch(`${CONFIG.backendUrl}/api/stats`);
+        const data = await response.json();
+        if (data && data.ok) {
+          document.getElementById("stat-total-users").textContent = data.totalUsers ?? 0;
+          document.getElementById("stat-active-sessions").textContent = data.activeSessions ?? 0;
+          document.getElementById("stat-total-paired").textContent = data.totalPaired ?? 0;
+          document.getElementById("stat-daily-new").textContent = data.dailyNew ?? 0;
+        }
+      } catch (err) {
+        // Keep last shown values as instructed
+      }
+    }
+
+    // Pairing Logic
+    let countdownInterval = null;
+
+    async function handlePairing(event) {
+      event.preventDefault();
+      
+      const countryCode = document.getElementById("country-code").value.trim().replace(/\D/g, "");
+      const phoneInput = document.getElementById("phone-number").value.trim().replace(/\D/g, "");
+      const fullNumber = countryCode + phoneInput;
+
+      // Validate digits length (10-15 digits total)
+      if (fullNumber.length < 10 || fullNumber.length > 15) {
+        showToast("Please enter a valid phone number (10 to 15 digits total including country code).", "error");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submit-btn");
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Generating...`;
+
+      try {
+        const response = await fetch(`${CONFIG.backendUrl}/api/pair`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            number: fullNumber,
+            brand: {
+              name: CONFIG.brandName,
+              banner: CONFIG.bannerImageUrl,
+              owner: CONFIG.ownerNumber,
+              ownerName: CONFIG.ownerName,
+              channel: CONFIG.channelLink
+            }
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          let errorMsg = data.error || "Failed to generate pairing code.";
+          if (response.status === 400) {
+            errorMsg = data.error || "Invalid phone number format.";
+          } else if (response.status === 429) {
+            errorMsg = data.error || "A pairing is already in progress. Please wait a moment.";
+          } else if (response.status === 503) {
+            errorMsg = data.error || "Pairing capacity full. Please try again shortly.";
+          }
+          showToast(errorMsg, "error");
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+          return;
+        }
+
+        if (data && data.code) {
+          displayPairingCode(data.code, data.expiresIn || 120);
+          showToast("Pairing code generated successfully!", "success");
+        } else {
+          throw new Error("Invalid response from server.");
+        }
+
+      } catch (err) {
+        showToast("Could not reach server, please check your connection and try again.", "error");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    }
+
+    function displayPairingCode(code, expiresInSeconds) {
+      // Format code as XXXX-XXXX if length is 8 characters
+      let formattedCode = code;
+      if (code.length === 8) {
+        formattedCode = `${code.slice(0, 4)}-${code.slice(4)}`;
+      }
+
+      document.getElementById("pairing-code-display").textContent = formattedCode;
+      document.getElementById("pairing-form-container").classList.add("hidden");
+      document.getElementById("pairing-result-container").classList.remove("hidden");
+
+      startCountdown(expiresInSeconds);
+    }
+
+    function startCountdown(duration) {
+      if (countdownInterval) clearInterval(countdownInterval);
+      
+      let timer = duration;
+      const timerDisplay = document.getElementById("countdown-timer");
+
+      countdownInterval = setInterval(() => {
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+
+        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        if (--timer < 0) {
+          clearInterval(countdownInterval);
+          timerDisplay.textContent = "Expired";
+          showToast("Pairing code has expired. Please request a new one.", "error");
+        }
+      }, 1000);
+    }
+
+    function copyPairingCode() {
+      const codeText = document.getElementById("pairing-code-display").textContent.replace(/-/g, "");
+      navigator.clipboard.writeText(codeText).then(() => {
+        showToast("Pairing code copied to clipboard!", "success");
+      }).catch(() => {
+        showToast("Failed to copy code.", "error");
+      });
+    }
+
+    function resetPairingView() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      document.getElementById("pairing-result-container").classList.add("hidden");
+      document.getElementById("pairing-form-container").classList.remove("hidden");
+      
+      const submitBtn = documen
